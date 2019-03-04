@@ -4,7 +4,6 @@ Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from app import app, db, login_manager
