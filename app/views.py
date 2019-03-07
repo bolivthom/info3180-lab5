@@ -9,8 +9,9 @@ from flask_sqlalchemy import SQLAlchemy
 from app import app, db, login_manager
 from flask import render_template, request, redirect, url_for, flash, session
 from flask_login import login_user, logout_user, current_user, login_required
-from forms import LoginForm
-from models import UserProfile
+from app.forms import LoginForm
+from app.models import UserProfile
+from werkzeug.security import check_password_hash
 
 
 ###
@@ -45,16 +46,18 @@ def login():
         if form.username.data:
             username = form.username.data
             password = form.password.data
-            user = UserProfile.query.filter_by(username=username, password=password).first()
-            login_user(user)
-            session['logged_in'] = True
-            flash('Logged in successfully.', 'success')
-            return redirect(url_for("secure_page"))
+            user = UserProfile.query.filter_by(username=username).first()
+            if user is not None and check_password_hash(user.password, password):
+                login_user(user)
+                flash('Logged in successfully.', 'success')
+                return redirect(url_for("secure_page"))
+        else:
+            flash('Username or Password is incorrect.', 'danger')
     return render_template("login.html", form=form)
 
 @app.route('/logout')
 def logout():
-    session.pop('logged_in', None)
+    logout_user()
     flash('You were logged out', 'success')
     return redirect(url_for('home'))
 
