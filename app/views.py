@@ -33,9 +33,6 @@ def about():
 @login_required
 def secure_page():
     """Render a secure page on our website that only logged in users can access."""
-    if not session.get('logged_in'):
-        flash('Login Required', 'danger')
-        return redirect(url_for("login"))
     return render_template('secure_page.html')
 
 
